@@ -18,10 +18,20 @@ class Sentence:
         :param str query: querying string as in ngram.Oanc
         """
         self.word = Word()
-        if keyword is None:
-            keyword = Word().random()
-        self.text_model = markovify.Text(Oanc(keyword, query).raw)
+        self.text_model = self.generate(keyword, query)
 
+    def generate(self, keyword: str=None, query: str=None):
+        """
+        Generate Markov model from OANC on,
+        with random keyword, or as defined in ngram.Oanc
+        :param str keyword: a single keyword as defined in ngram.Oanc
+        :param str query: querying string as in ngram.Oanc
+        :return Markov model:
+        """
+        if keyword is None:
+            keyword = self.word.random()
+        return markovify.Text(Oanc(keyword, query).raw)
+    
     def random(self):
         """
         Generate a random sentence via markovify
