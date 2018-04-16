@@ -31,8 +31,8 @@ class Sentence:
         if keyword is None:
             keyword = self.word.random()
         return markovify.Text(Oanc(keyword, query).raw)
-    
-    def random(self):
+
+    def random(self, sentence_char_length=140):
         """
         Generate a random sentence via markovify
         :return str: random sentence
@@ -42,8 +42,10 @@ class Sentence:
 
         todo: bypassing KeyError: ('___BEGIN__', '___BEGIN__')
         """
+        result = ''
         while True:
-            result = self.text_model.make_sentence()
+            global result
+            result = self.text_model.make_short_sentence(sentence_char_length)
             if result is not None:
                 break
 
