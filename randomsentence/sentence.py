@@ -35,6 +35,7 @@ class Sentence:
     def random(self, sentence_char_length=140):
         """
         Generate a random sentence via markovify
+        :param int sentence_char_length: number of characters in markovify.model.make_short_sentence
         :return str: random sentence
 
         # >>> Sentence().random()
