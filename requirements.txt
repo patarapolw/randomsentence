@@ -1,0 +1,14 @@
+beautifulsoup4==4.6.0
+bs4==0.0.1
+certifi==2018.1.18
+chardet==3.0.4
+idna==2.6
+markovify==0.7.1
+pluggy==0.6.0
+py==1.5.3
+requests==2.18.4
+six==1.11.0
+tox==3.0.0
+Unidecode==1.0.22
+urllib3==1.22
+virtualenv==15.2.0
