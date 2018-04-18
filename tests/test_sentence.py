@@ -10,7 +10,7 @@ def test_init_and_generate():
     """
     Sentence.generate is inside __init__
 
-    50 rep passed
+    2 seconds per call
     :return:
     """
     Sentence()
@@ -18,6 +18,10 @@ def test_init_and_generate():
 
 @pytest.mark.repeat
 def test_random():
+    """
+    1.6 seconds per call
+    :return:
+    """
     random_sentence = sentence.random()
     assert isinstance(random_sentence, str)
 
@@ -34,3 +38,6 @@ def test_with_rating():
 
 if __name__ == '__main__':
     pytest.main(['--count=50', '-m', 'repeat', __file__])
+    # from timeit import timeit
+    #
+    # print(timeit(test_random, number=50)/50)
