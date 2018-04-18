@@ -5,16 +5,17 @@ Web-scraping OANC's http://www.anc.org/cgi-bin/ngrams.cgi
 import requests
 from bs4 import BeautifulSoup
 import string
-from random import randrange
 import re
 
 from randomsentence.word import Word
+
+__doctest_skip__ = ['Oanc.__init__']
 
 
 class Oanc:
     def __init__(self, keyword: str=None, query: str=None):
         """
-        Web-scraping OANC's http://www.anc.org/cgi-bin/ngrams.cgi
+        Web-scraping OANC's http://www.anc.org/data/oanc/ngram/
 
         :param str keyword: a keyword.
         If not specified, a word (beyond commonness of 100) is randomized from google-10000-english.txt
@@ -22,8 +23,10 @@ class Oanc:
         If not specified, keyword is used instead.
         If specified, keyword is ignored.
 
-        # >>> Oanc().raw
-        # a search result of a random keyword from OANC
+        >>> Oanc(keyword='adns').raw
+        \n
+        >>> Oanc(keyword='love').raw
+        Sentences containing the word 'love'
         """
         self.word = Word()
 
@@ -44,70 +47,36 @@ class Oanc:
 
         r = requests.get('http://www.anc.org/cgi-bin/ngrams.cgi', params=params)
 
-        self.raw = re.sub('( [{}].?)'.format(string.punctuation), self.punctuation_rules,
-                          BeautifulSoup(r.text, 'html.parser').text)
-
-    def clip(self, number_of_words):
-        """
-        Clip the paragraphs in OANC to a limited number of words.
-
-        :param int number_of_words: the number of words to be clipped
-        :return str: a fragment of a sentence
-
-        # >>> Oanc().clip(4)
-        # side of the two-way mirror
-        """
-        space = [-1]
-        for i, char in enumerate(self.raw):
-            if char == ' ':
-                try:
-                    if self.raw[i+1] not in string.punctuation:
-                        space.append(i)
-                except ValueError:
-                    pass
-
-        not_word = []
-        for i in range(len(space)-1):
-            word = self.raw[space[i]+1:space[i+1]]
-            if not self.word.is_word(word):
-                not_word.append(space[i+1])
-        for key in not_word:
-            space.remove(key)
-
-        while True:
-            try:
-                start_index = randrange(len(space))
-                start = space[start_index] + 1
-                end = space[start_index + number_of_words]
-                break
-            except IndexError:
-                pass
-
-        return self.raw[start:end]
+        self.raw = self.punctuate(BeautifulSoup(r.text, 'html.parser').find('pre').text).strip()
 
     @staticmethod
-    def punctuation_rules(match_obj):
+    def punctuate(sentence):
         """
-        Fix broken punctuations in OANC results. Used in re.sub
+        Correct punctuation for 'Lexical token' output style:
+        'http://www.anc.org/data/oanc/ngram/'
+        :param str sentence: badly punctuated sentence
+        :return str: well punctuated sentence
 
-        :param match_obj: match_obj as returned by re.sub.
-        match_obj.group() is space followed by punctuation +/- followed by after-character
-        :return str: correct punctuation
+        >>> Oanc.punctuate('Readers would write her with their questions on life , love , and ( usually ) microeconomics , and she would give them really great advice , e . g . , " Wake up and smell the coffee , honey ! " ')
+        'Readers would write her with their questions on life, love, and (usually) microeconomics, and she would give them really great advice, e. g. , " Wake up and smell the coffee, honey! " '
         """
-        punctuation = match_obj.group()
+        def rules(match_obj):
+            punctuation = match_obj.group()
 
-        if punctuation[1] in '!.?,:;':
-            return punctuation[1:]
-        elif punctuation[1] in "'":
-            if punctuation[-1] in string.ascii_letters:
+            if punctuation[1] in '!.?,:;':
                 return punctuation[1:]
-        elif punctuation[1] in '({[':
-            return punctuation[:2]
-        elif punctuation[1] in ')}]':
-            return punctuation[1:]
+            elif punctuation[1] in "'":
+                if punctuation[-1] in string.ascii_letters:
+                    return punctuation[1:]
+            elif punctuation[1] in '({[':
+                return punctuation[:2]
+            elif punctuation[1] in ')}]':
+                return punctuation[1:]
 
-        return punctuation
+            return punctuation
+
+        return re.sub('( [{}].?)'.format(string.punctuation), rules, sentence)
 
 
 if __name__ == '__main__':
-    print(Oanc().clip(4))
+    pass

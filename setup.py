@@ -7,6 +7,9 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+pytest_requires = ['xdist', 'repeat', 'timeout', 'doctestplus']
+tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires]
+
 setup(
     name='randomsentence',  # Required
     version='0.1.0',  # Required
@@ -42,8 +45,9 @@ setup(
     # ],
     keywords='random sentence random_sentence random_word',  # Optional
     packages=find_packages(exclude=['tests']),  # Required
-    install_requires=['bs4', 'requests', 'markovify'],  # Optional
+    install_requires=['bs4', 'requests', 'markovify', 'textblob'],  # Optional
     python_requires='>=3',
+    tests_require=['pytest', 'pytest-xdist', 'pytest-repeat', 'pytest-timeout', 'pytest-doctestplus'],
     extras_require={  # Optional
         'test': ['tox'],
     },

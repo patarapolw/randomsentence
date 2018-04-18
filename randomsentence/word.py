@@ -1,7 +1,6 @@
 """
 Randomize a word from google-10000-english.txt, with some utility functions.
 """
-import os
 import math
 import re
 import string
@@ -10,7 +9,9 @@ try:
 except ImportError:
     from random import choice
 
-from randomsentence.dir import ROOT
+from randomsentence.dir import database_path
+
+__doctest_skip__ = ['Word.random']
 
 
 class Word:
@@ -23,7 +24,7 @@ class Word:
         :param str filename: path to file to be read.
         """
         if filename is None:
-            filename = os.path.join(ROOT, 'google-10000-english.txt')
+            filename = database_path('google-10000-english.txt')
 
         self.words = []
         with open(filename) as f:
@@ -38,8 +39,8 @@ class Word:
         :param int max_common: maximum commonness to ignore. Ignore some uncommon words.
         :return str: a randomized word, attempting to use secrets.common first if present (Python >= 3.6)
 
-        # >>> Word().random()
-        # bathrooms
+        >>> Word().random()
+        bathrooms
         """
         return choice(self.words[min_common:max_common])
 
@@ -95,7 +96,25 @@ class Word:
 
         return False
 
+    @staticmethod
+    def to_keywords(sentence):
+        """
+
+        :param sentence:
+        :return list: list of keywords
+
+        >>> Word.to_keywords('And then illustrates the new Martin Short talk show.')
+        ['and', 'then', 'illustrates', 'the', 'new', 'martin', 'short', 'talk', 'show']
+        """
+        keywords = sentence.lower().split(' ')
+        for i, keyword in enumerate(keywords):
+            if keyword[-1] in string.punctuation:
+                keywords[i] = keyword[:-1]
+            if keyword[0] in string.punctuation:
+                keywords[i] = keyword[1:]
+
+        return keywords
+
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod(verbose=True)
+    pass
