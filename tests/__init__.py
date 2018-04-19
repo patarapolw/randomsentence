@@ -22,8 +22,10 @@ def timeit(func, validator=lambda x: True, rep=50):
         average = sum(time_record)/len(time_record)
         if isinstance(func, partial):
             function_name = func.func.__qualname__
-        else:
+        elif callable(func):
             function_name = func.__qualname__
+        else:
+            function_name = ''
         print('{:.4f} seconds per {}'.format(average, function_name))
 
     return time_record

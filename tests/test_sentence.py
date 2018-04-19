@@ -1,43 +1,25 @@
-import pytest
+"""
+0.0795 seconds per SentenceTool
+0.0019 seconds per SentenceTool.rate
+0.0015 seconds per SentenceTool.detokenize
+"""
+import string
 
-from randomsentence.sentence import Sentence
+from randomsentence.sentence import SentenceTool
 
-sentence = Sentence()
-
-
-@pytest.mark.repeat
-def test_init_and_generate():
-    """
-    Sentence.generate is inside __init__
-
-    2 seconds per call
-    :return:
-    """
-    Sentence()
+sentence_tool = SentenceTool()
 
 
-@pytest.mark.repeat
-def test_random():
-    """
-    1.6 seconds per call
-    :return:
-    """
-    random_sentence = sentence.random()
-    assert isinstance(random_sentence, str)
-
-
-@pytest.mark.repeat
-def test_with_rating():
-    rated_sentence = sentence.with_rating()
-
-    for pair in rated_sentence['rating']:
-        assert len(pair) == 2
-
-    assert isinstance(rated_sentence['sentence'], str)
+def test_rate(tokens=None):
+    if tokens is None:
+        tokens = ['The', 'White', 'Russians', 'and', 'the', 'Ukrainians', 'would', 'say', 'that', 'Stalin', 'and', 'Molotov', 'were', 'far', 'less', 'reliable', 'defenders', 'of', 'Russia', 'than', 'Curzon', 'and', 'Clemenceau', '.']
+    for token, rating in sentence_tool.rate(tokens):
+        assert all([char.islower() for char in token if char in string.ascii_letters])
+        assert rating >= 0
 
 
 if __name__ == '__main__':
-    pytest.main(['--count=50', '-m', 'repeat', __file__])
-    # from timeit import timeit
-    #
-    # print(timeit(test_random, number=50)/50)
+    from tests import timeit
+    from functools import partial
+
+    timeit(partial(sentence_tool.detokenize, tokens=['The', 'White', 'Russians', 'and', 'the', 'Ukrainians', 'would', 'say', 'that', 'Stalin', 'and', 'Molotov', 'were', 'far', 'less', 'reliable', 'defenders', 'of', 'Russia', 'than', 'Curzon', 'and', 'Clemenceau', '.']))

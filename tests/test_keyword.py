@@ -1,55 +1,97 @@
-import string
+"""
+5.4680 seconds per KeywordParse
+0.0934 seconds per KeywordParse.from_keyword_list
+0.0892 seconds per KeywordParse.from_initials_list
+"""
+
 import pytest
-from random import randint
+import string
+from random import choice
 
 from randomsentence.keyword import KeywordParse
-from randomsentence.word import Word
+from randomsentence.word import WordTool
+from randomsentence.sentence import SentenceTool
 
-word = Word()
-keyword_parse = KeywordParse('/Users/patarapolw/PycharmProjects/sentencebuilder/sentencebuilder/'
-                             'LanguageTool-4.1/languagetool-commandline.jar')
+word_tool = WordTool()
+keyword_parse = KeywordParse()
+sentence_tool = SentenceTool()
+
+
+@pytest.fixture()
+def from_keyword_list():
+    def func(length=3, strictness=None):
+        """
+
+        :param length: number of words in keyword_list
+        :param strictness:
+        :return:
+
+        from_keyword_list(), length=3, strictness=None, Success 30 of 50, 0.0224 seconds per test
+        from_keyword_list(), length=3, strictness=2, Success 50 of 50, 0.1001 seconds per test
+        from_keyword_list(), length=4, strictness=2, Success 50 of 50, 0.1033 seconds per test
+        from_keyword_list(), length=5, strictness=2, Success 50 of 50, 0.1017 seconds per test
+        from_keyword_list(), length=6, strictness=2, Success 50 of 50, 0.1034 seconds per test
+        """
+        keyword_list = [word_tool.get_random_word() for _ in range(length)]
+        sentence = keyword_parse.from_keyword_list(keyword_list=keyword_list, strictness=strictness)
+        if sentence is None:
+            return False
+
+        print(sentence_tool.detokenize([word for word, _ in sentence]))
+        for word, is_overlap in sentence:
+            assert isinstance(word, str)
+            assert isinstance(is_overlap, bool)
+
+        return True
+
+    return func
 
 
 @pytest.mark.repeat
-@pytest.mark.slow
-def test_keywords_to_sentence(number_of_keywords=randint(4, 6), timeout=20, strictness=2):
-    """
-    The result is sometimes None, even with 60 seconds' timeout; although it might not be None in a repeated run.
+@pytest.mark.parametrize('length, strictness', [[3, 2], [4, 2], [5, 2], [6, 2]])
+def test_from_keyword_list(from_keyword_list, length, strictness):
+    assert from_keyword_list(length, strictness)
 
-    :param int number_of_keywords: number of keywords
-    :param float timeout: timeout to the function
-    :param int | None strictness: Strictness of POS matching
+
+@pytest.fixture()
+def from_initials_list():
+    """
+
     :return:
-
-    number_of_keywords:
-    2 - 49 of 50, 2.9815 seconds per function, strictness=None
-    3 - 45 of 50, 6.1684 seconds per test, strictness=None
-    4 - 48 of 50, 3.0103 seconds per test, strictness=2
-    5 - 47 of 50, 4.9906 seconds per test, strictness=2
-    6 - 35 of 50, 7.5317 seconds per test, strictness=2
-    6 - 50 of 50, 0.9463 seconds per test, strictness=0
+    length=3, Success 50 of 50, 0.0949 seconds per from_initials_list.<locals>.func
+    length=4, Success 50 of 50, 0.1373 seconds per from_initials_list.<locals>.func
+    length=5, Success 50 of 50, 0.1500 seconds per from_initials_list.<locals>.func
+    length=5, Success 50 of 50, 0.1495 seconds per from_initials_list.<locals>.func
     """
-    keyword_list = [word.random() for _ in range(number_of_keywords)]
-    sentence = keyword_parse.to_sentence(keyword_list,
-                                         timeout=timeout, sentence_char_length=None, strictness=strictness)
+    def func(length=3):
+        starters = [[c] for c in string.ascii_lowercase]
+        starters.remove(['x'])
+        starters.append(['ex'])
+        initials_list = [choice(starters) for _ in range(length)]
 
-    if sentence is not None:
-        print(sentence)
-        assert not sentence[0].islower()
-        assert sentence[-1] in string.punctuation
+        sentence = keyword_parse.from_initials_list(initials_list)
+        if sentence is None:
+            return False
+
+        print(sentence_tool.detokenize([word for word, _ in sentence]))
+        for word, is_overlap in sentence:
+            assert isinstance(word, str)
+            assert isinstance(is_overlap, bool)
 
         return True
-    else:
-        print(keyword_list)
-        assert sentence is None
 
-        return False
+    return func
+
+
+@pytest.mark.repeat
+@pytest.mark.parametrize('length', [3, 4, 5, 6])
+def test_from_initials_list(from_initials_list, length):
+    assert from_initials_list(length)
 
 
 if __name__ == '__main__':
-    # pytest.main(['--count=50', '-m', 'repeat', __file__])
-    from tests import timeit
-    from functools import partial
-
-    timeit(partial(test_keywords_to_sentence, number_of_keywords=6, strictness=0),
-           validator=lambda x: x, rep=50)
+    # from tests import timeit
+    # from functools import partial
+    #
+    # timeit(partial(from_initials_list(), length=6))
+    pytest.main([__file__])

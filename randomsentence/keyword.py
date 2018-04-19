@@ -1,57 +1,66 @@
-from textblob import TextBlob
+import nltk
 from time import time
-try:
-    import language_check
-except ImportError:
-    from randomsentence.languagetool import languagetool_commandline
 
-from randomsentence.ngram import Oanc
-from randomsentence.sentence import Sentence
+from randomsentence.brown import Brown
 
-__doctest_skip__ = ['KeywordParse.to_sentence']
+__doctest_skip__ = ['KeywordParse.from_keyword_list', 'KeywordParse.from_initials_list']
 
 
 class KeywordParse:
-    def __init__(self, languagetool: str=None):
-        if languagetool is None:
-            self.tool = language_check.LanguageTool('en-US')
-        else:
-            self.tool = languagetool
+    def __init__(self):
+        self.brown = Brown()
 
-    def to_sentence(self, keyword_list,
-                    sentence_char_length=140, strictness=2, timeout=20):
+    def from_keyword_list(self, keyword_list, strictness=2, timeout=20):
         """
-        Convert a list of keywords to sentence. The result is sometimes
+        Convert a list of keywords to sentence. The result is sometimes None
 
         :param list keyword_list: a list of string
-        :param int | None sentence_char_length:
         :param int | None strictness: None for highest strictness. 2 or 1 for a less strict POS matching
         :param float timeout: timeout of this function
         :return str: sentence generated
 
-        >>> KeywordParse().to_sentence(['love', 'blind', 'trouble'])
-        I am out to my ex-wife love and not doing any blind but might be some trouble.
-
-        TODO: Eliminate return None
+        >>> KeywordParse().from_keyword_list(['love', 'blind', 'trouble'])
+        [('For', False), ('love', True), ('to', False), ('such', False), ('blind', True), ('we', False), ('must', False), ('turn', False), ('to', False), ('the', False), ('trouble', True)]
         """
-        keyword_tags = TextBlob(' '.join(keyword_list)).tags
+        keyword_tags = nltk.pos_tag(keyword_list)
 
         start = time()
         while time() - start < timeout:
             index = 0
             output_list = []
-            sentence = Sentence().random(sentence_char_length=sentence_char_length)
-            for word, tag in TextBlob(sentence).tags:
+            tagged_sent = self.brown.get_tagged_sent()
+            for word, tag in tagged_sent:
                 if index >= len(keyword_tags):
-                    output = Oanc.punctuate(' '.join(output_list))
-                    output = output[0].upper() + output[1:] + '.'
-                    if isinstance(self.tool, str):
-                        return languagetool_commandline(output, self.tool)
-                    else:
-                        return language_check.correct(output, self.tool.check(output))
+                    return self.get_overlap(keyword_list, output_list, is_word_list=True)
 
                 if self.match_pos(tag, keyword_tags[index][1], strictness=strictness):
                     output_list.append(keyword_tags[index][0])
+                    index += 1
+                else:
+                    output_list.append(word)
+
+        return None
+
+    def from_initials_list(self, initials_list, timeout=20):
+        """
+
+        :param list of lists of initials initials_list: e.g. [['a'], ['b']]
+        :param timeout: timeout of this function
+        :return str: sentence generated
+        >>> KeywordParse().from_initials_list([['a'], ['b']])
+        [('Mrs.', False), ('Freight', False), ('(', False), ('Knight', False), ('Dream-Miss', False), ('Reed', False), (')', False), ('amounts', True), ('butter', True)]
+        """
+        start = time()
+        while time() - start < timeout:
+            index = 0
+            output_list = []
+            tagged_sent = self.brown.get_tagged_sent()
+            for word, pos in tagged_sent:
+                if index >= len(initials_list):
+                    return self.get_overlap(initials_list, output_list, is_word_list=False)
+
+                if pos in self.brown.initials_to_pos(initials_list[index]):
+                    output_list.append(self.brown.word_from_pos_and_initials(pos, initials_list[index]))
                     index += 1
                 else:
                     output_list.append(word)
@@ -64,23 +73,43 @@ class KeywordParse:
         Match part-of-speech as defined in https://catalog.ldc.upenn.edu/docs/LDC99T42/tagguid1.pdf
         :param pos1:
         :param pos2:
-        :param int | None strictness:
+        :param int | None strictness: None is the strictest
         :return bool:
 
         >>> KeywordParse.match_pos('NN', 'PRP', 0)
         True
         """
-        pools = [
-            ['N', 'P']  # noun
-        ]
-
-        if strictness == 0:
-            for pool in pools:
-                if pos1 in pool and pos2 in pool:
-                    return True
-
         return pos1[:strictness] == pos2[:strictness]
+
+    @staticmethod
+    def get_overlap(initials_list_or_word_list, tokens, is_word_list=True):
+        """
+
+        :param list of str | list of lists initials_list_or_word_list:
+        :param list of str tokens:
+        :param bool is_word_list: If False, initials_list
+        :return list of tuple:
+
+        """
+        index = 0
+        result = []
+        for token in tokens:
+            if index >= len(initials_list_or_word_list):
+                break
+            if ((is_word_list and token == initials_list_or_word_list[index]) or
+                    (not is_word_list and
+                     any([token.startswith(initial) for initial in initials_list_or_word_list[index]]))):
+                result.append((token, True))
+                index += 1
+            else:
+                result.append((token, False))
+
+        if index != len(initials_list_or_word_list):
+            raise ValueError('Does not overlap')
+        else:
+            return result
 
 
 if __name__ == '__main__':
-    pass
+    import doctest
+    doctest.testmod()

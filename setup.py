@@ -1,17 +1,13 @@
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
-import sys
 
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-install_requires = ['bs4', 'requests', 'markovify', 'textblob', 'language-check']
-if '--no-languagetool' in sys.argv:
-    install_requires.remove('language-check')
-
+install_requires = ['nltk', 'PyYAML']
 pytest_requires = ['xdist', 'repeat', 'timeout', 'doctestplus']
 tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires]
 
@@ -50,13 +46,14 @@ setup(
     # ],
     keywords='random sentence random_sentence random_word',  # Optional
     packages=find_packages(exclude=['tests']),  # Required
-    install_requires= + dev_not_require,  # Optional
+    install_requires=install_requires,  # Optional
     python_requires='>=3',
     tests_require=pytest_requires,
     extras_require={  # Optional
         'test': ['tox'] + pytest_requires,
+        'with-language-check': ['language-check']
     },
     package_data={  # Optional
-        'randomsentence': ['google-10000-english.txt'],
+        'randomsentence': ['database/*'],
     },
 )

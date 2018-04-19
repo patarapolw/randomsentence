@@ -1,18 +1,24 @@
+"""
+0.0802 seconds per WordTool
+0.0000 seconds per WordTool.get_random_word
+0.0002 seconds per WordTool.commonness
+0.0000 seconds per WordTool.is_word
+0.0007 seconds per WordTool.in_dictionary
+"""
 import pytest
 
-from randomsentence.word import Word
+from randomsentence.word import WordTool
 
-word = Word()
+word_tool = WordTool()
 
 
-@pytest.mark.repeat
-def test_random():
-    randomized_word = word.random()
-    print(randomized_word)
-
-    assert isinstance(randomized_word, str)
-    assert randomized_word not in word.words[:100]
+def test_get_random_word():
+    word = word_tool.get_random_word()
+    assert isinstance(word, str)
 
 
 if __name__ == '__main__':
-    pytest.main(['--count=50', '-m', 'repeat', __file__])
+    from tests import timeit
+    from functools import partial
+
+    timeit(partial(word_tool.in_dictionary, word='bathrooms'))
