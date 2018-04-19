@@ -1,26 +1,62 @@
 # Random Sentence
 
-A random sentence generator (needs internet connection to OANC), and a random word generator (offline)
+Generate a sentence, randomly or from a list of keywords/initials. This is based on Brown corpus. 
 
 ## Installation
 
+Download the git, and cd, then run
 ```
-pip install randomsentence
+python setup.py install
 ```
 
 ## Usage
 
-```python
->>> from randomsentence import Sentence, Word
->>> Sentence().with_rating()
-[('The', 0), ('host', 1655), ('and', 2), ('audience', 3130), ('are', 19), ('judge', 2566), ('and', 2), ('jury', 5933), ('for', 6), ('the', 0), ('whole', 940), ('family,', inf), ('with', 12), ('trams', inf), ('and', 2), ('launches', 7665), ('to', -1), ('take', 245), ('guests', 3177), ('to', -1), ('represent', 2975), ('strongly', 4253), ('contrary', 6810), ('positions.', inf)]
->>> Word().random()
-ford
+
+```
+>>> from randomsentence import Brown
+>>> tagged_sentence = Brown().get_tagged_sent()
+>>> tagged_sentence
+[('She', 'PPS'), ('saw', 'VBD'), ('it', 'PPO'), ('then', 'RB'), (',', ','), ('the', 'AT'), ('distant', 'JJ'), ('derrick', 'NN'), ('of', 'IN'), ('the', 'AT'), ('wildcat', 'NN'), ('--', '--'), ('a', 'AT'), ('test', 'NN'), ('well', 'RB'), ('in', 'IN'), ('unexplored', 'JJ'), ('country', 'NN'), ('.', '.')]
+```
+
+For Brown corpus, it is tagged based on Part-of-speech. This can easily be turned to a real sentence.
+
+```
+>>> from randomsentence import SentenceTool
+>>> sentence_tool = SentenceTool()
+>>> sentence_tool.detokenize_tagged(tagged_sentence)
+'She saw it then, the distant derrick of the wildcat -- a test well in unexplored country.'
+>>> from randomsentence import KeywordParse
+>>> parser = KeywordParse()
+>>> tagged_sentence = parser.from_keyword_list(['love', 'blind', 'trouble'])
+>>> tagged_sentence
+[('On', False), ('the', False), ('love', True), ('he', False), ('stopped', False), ('at', False), ('the', False), ('blind', True), ('to', False), ('receive', False), ('his', False), ('trouble', True)]
+```
+
+For KeywordParse, the word is tagged based on whether the keyword overlaps.
+
+```
+>>> sentence_tool.detokenize_tagged(tagged_sentence)
+'On the love he stopped at the blind to receive his trouble'
+>>> tagged_sentence = parser.from_initials('JKr')
+>>> tagged_sentence
+[('These', False), ('joints', True), ('may', False), ('be', False), ('knotted', True), ('as', False), ('receives', True)]
+>>> sentence_tool.detokenize_tagged(tagged_sentence)
+'These joints may be knotted as receives'
+```
+
+Grammar fixing module is also included, in case minor grammar fix is needed. This is based on language-check / languagetool.
+
+```
+>>> from randomsentence import GrammarCorrector
+>>> corrector = GrammarCorrector()
+>>> corrector.correct('A sentence with a error in the Hitchhiker’s Guide tot he Galaxy')
+'A sentence with an error in the Hitchhiker’s Guide to the Galaxy'
 ```
 
 ## Todo
-
-bypassing `KeyError: ('___BEGIN__', '___BEGIN__')`
+ 
+KeywordParse sometimes fail. It returns None on failure. This needs to be minimized.
 
 ## Found In
 

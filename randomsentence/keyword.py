@@ -10,14 +10,14 @@ class KeywordParse:
     def __init__(self):
         self.brown = Brown()
 
-    def from_keyword_list(self, keyword_list, strictness=2, timeout=20):
+    def from_keyword_list(self, keyword_list, strictness=2, timeout=3):
         """
         Convert a list of keywords to sentence. The result is sometimes None
 
         :param list keyword_list: a list of string
         :param int | None strictness: None for highest strictness. 2 or 1 for a less strict POS matching
         :param float timeout: timeout of this function
-        :return str: sentence generated
+        :return list of tuple: sentence generated
 
         >>> KeywordParse().from_keyword_list(['love', 'blind', 'trouble'])
         [('For', False), ('love', True), ('to', False), ('such', False), ('blind', True), ('we', False), ('must', False), ('turn', False), ('to', False), ('the', False), ('trouble', True)]
@@ -41,12 +41,12 @@ class KeywordParse:
 
         return None
 
-    def from_initials_list(self, initials_list, timeout=20):
+    def from_initials_list(self, initials_list, timeout=3):
         """
 
         :param list of lists of initials initials_list: e.g. [['a'], ['b']]
-        :param timeout: timeout of this function
-        :return str: sentence generated
+        :param float timeout: timeout of this function
+        :return list of tuple: sentence generated
         >>> KeywordParse().from_initials_list([['a'], ['b']])
         [('Mrs.', False), ('Freight', False), ('(', False), ('Knight', False), ('Dream-Miss', False), ('Reed', False), (')', False), ('amounts', True), ('butter', True)]
         """
@@ -66,6 +66,18 @@ class KeywordParse:
                     output_list.append(word)
 
         return None
+
+    def from_initials(self, initials, timeout=3):
+        """
+
+        :param str initials:
+        :param float timeout:
+        :return list of tuple:
+        >>> KeywordParse().from_initials('xyz')
+        [('Charles', False), ('A.', False), ('Black', False), (',', False), ('exchange', True), ('year', True), (',', False), ('zipped', True)]
+        """
+        initials_list = [[char.lower()] if char.lower() != 'x' else ['ex'] for char in initials]
+        return self.from_initials_list(initials_list, timeout)
 
     @staticmethod
     def match_pos(pos1, pos2, strictness=2):

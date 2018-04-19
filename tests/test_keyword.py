@@ -89,9 +89,40 @@ def test_from_initials_list(from_initials_list, length):
     assert from_initials_list(length)
 
 
+@pytest.fixture()
+def from_initials():
+    """
+
+    :return:
+    length=6, Success 50 of 50, 0.1671 seconds per from_initials.<locals>.func
+    """
+    def func(length=3):
+        initials = ''.join([choice(string.ascii_letters) for _ in range(length)])
+        print(initials)
+
+        sentence = keyword_parse.from_initials(initials)
+        if sentence is None:
+            return False
+
+        print(sentence_tool.detokenize([word for word, _ in sentence]))
+        for word, is_overlap in sentence:
+            assert isinstance(word, str)
+            assert isinstance(is_overlap, bool)
+
+        return True
+
+    return func
+
+
+@pytest.mark.repeat
+@pytest.mark.parametrize('length', [3, 4, 5, 6])
+def test_from_initials(from_initials, length):
+    assert from_initials(length)
+
+
 if __name__ == '__main__':
-    # from tests import timeit
-    # from functools import partial
-    #
-    # timeit(partial(from_initials_list(), length=6))
-    pytest.main([__file__])
+    from tests import timeit
+    from functools import partial
+
+    timeit(partial(from_initials(), length=6))
+    # pytest.main([__file__])

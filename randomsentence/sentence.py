@@ -6,6 +6,7 @@ except ImportError:
     from random import choice
 
 from randomsentence.word import WordTool
+from randomsentence.brown import Brown
 
 
 class SentenceTool:
@@ -35,6 +36,14 @@ class SentenceTool:
         'The White Russians and the Ukrainians would say that Stalin and Molotov were far less reliable defenders of Russia than Curzon and Clemenceau.'
         """
         return self.detokenizer.detokenize(tokens, return_str=True)
+
+    def detokenize_tagged(self, tagged_tokens):
+        """
+
+        :param tagged_tokens:
+        :return:
+        """
+        return self.detokenize([token for token, tag in tagged_tokens])
 
 
 if __name__ == '__main__':

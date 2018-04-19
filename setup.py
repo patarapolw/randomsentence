@@ -13,9 +13,9 @@ tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires
 
 setup(
     name='randomsentence',  # Required
-    version='0.1.0',  # Required
-    description='A random sentence generator (needs internet connection to OANC), '
-                'and a random word generator (offline)',  # Required
+    version='0.1.1',  # Required
+    description='Generate a sentence, randomly or from a list of keywords/initials. '
+                'This is based on Brown corpus.',  # Required
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
     url='https://github.com/patarapolw/randomsentence',  # Optional
