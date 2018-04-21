@@ -5,6 +5,7 @@ certifi==2018.1.18
 chardet==3.0.4
 execnet==1.5.0
 idna==2.6
+markovify==0.7.1
 more-itertools==4.1.0
 nltk==3.2.5
 numpy==1.14.2

@@ -1,10 +1,9 @@
 """
-5.4027 seconds per Brown.__init__
+15.8908 seconds per Brown
 0.0925 seconds per Brown.get_tagged_sent
 0.0000 seconds per Brown.initials_to_pos
 0.0002 seconds per Brown.word_from_pos_and_initials
 """
-import pytest
 import yaml
 
 from randomsentence.brown import Brown
@@ -38,4 +37,4 @@ def test_word_from_pos_and_initials():
 if __name__ == '__main__':
     from tests import timeit
     from functools import partial
-    timeit(test_get_tagged_sent)
+    timeit(Brown)

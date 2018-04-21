@@ -7,6 +7,7 @@ Generate a sentence, randomly or from a list of keywords/initials. This is based
 Download the git, and cd, then run
 ```
 python setup.py install
+python -m nltk.downloader all
 ```
 
 ## Usage

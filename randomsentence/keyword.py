@@ -1,5 +1,9 @@
 import nltk
 from time import time
+try:
+    from secrets import choice
+except ImportError:
+    from random import choice
 
 from randomsentence.brown import Brown
 
@@ -19,7 +23,7 @@ class KeywordParse:
         :param float timeout: timeout of this function
         :return list of tuple: sentence generated
 
-        >>> KeywordParse().from_keyword_list(['love', 'blind', 'trouble'])
+        >>> KeywordParse().from_keyword_list(['Love', 'blind', 'trouble'])
         [('For', False), ('love', True), ('to', False), ('such', False), ('blind', True), ('we', False), ('must', False), ('turn', False), ('to', False), ('the', False), ('trouble', True)]
         """
         keyword_tags = nltk.pos_tag(keyword_list)
@@ -47,7 +51,7 @@ class KeywordParse:
         :param list of lists of initials initials_list: e.g. [['a'], ['b']]
         :param float timeout: timeout of this function
         :return list of tuple: sentence generated
-        >>> KeywordParse().from_initials_list([['a'], ['b']])
+        >>> KeywordParse().from_initials_list([['a'], ['re'], ['ex']])
         [('Mrs.', False), ('Freight', False), ('(', False), ('Knight', False), ('Dream-Miss', False), ('Reed', False), (')', False), ('amounts', True), ('butter', True)]
         """
         start = time()
@@ -59,11 +63,21 @@ class KeywordParse:
                 if index >= len(initials_list):
                     return self.get_overlap(initials_list, output_list, is_word_list=False)
 
-                if pos in self.brown.initials_to_pos(initials_list[index]):
-                    output_list.append(self.brown.word_from_pos_and_initials(pos, initials_list[index]))
-                    index += 1
+                poses = self.brown.initials_to_pos(initials_list[index])
+                if poses is None:
+                    new_word_list = [w for w in self.brown.word_list_from_pos(pos)
+                                     if any([w.startswith(initial) for initial in initials_list[index]])]
+                    if len(new_word_list) > 0:
+                        output_list.append(choice(new_word_list))
+                        index += 1
+                    else:
+                        output_list.append(word)
                 else:
-                    output_list.append(word)
+                    if pos in poses:
+                        output_list.append(self.brown.word_from_pos_and_initials(pos, initials_list[index]))
+                        index += 1
+                    else:
+                        output_list.append(word)
 
         return None
 
@@ -108,7 +122,7 @@ class KeywordParse:
         for token in tokens:
             if index >= len(initials_list_or_word_list):
                 break
-            if ((is_word_list and token == initials_list_or_word_list[index]) or
+            if ((is_word_list and token.lower() == initials_list_or_word_list[index].lower()) or
                     (not is_word_list and
                      any([token.startswith(initial) for initial in initials_list_or_word_list[index]]))):
                 result.append((token, True))
@@ -123,5 +137,4 @@ class KeywordParse:
 
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    print(KeywordParse().from_keyword_list(['Love', 'blind', 'trouble']))

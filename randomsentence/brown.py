@@ -1,6 +1,7 @@
 from nltk.corpus import brown
 import yaml
 from time import time
+import markovify
 
 try:
     from secrets import choice
@@ -14,7 +15,7 @@ __doctest_skip__ = ['Brown.get_tagged_sent', 'Brown.word_from_pos_and_initials']
 
 class Brown:
     def __init__(self):
-        self.tagged_sents = brown.tagged_sents()
+        self.model = markovify.Chain(brown.tagged_sents(), 2)
         self.words_from_pos = dict()
         for word, tag in brown.tagged_words():
             self.words_from_pos.setdefault(tag, []).append(word)
@@ -28,12 +29,8 @@ class Brown:
         >>> tagged_sent = Brown().get_tagged_sent()
         >>> tagged_sent
         [('As', 'CS'), ('she', 'PPS'), ('was', 'BEDZ'), ('rather', 'QL'), ('tired', 'VBN'), ('this', 'DT'), ('evening', 'NN'), (',', ','), ('her', 'PP$'), ('simple', 'JJ'), ('``', '``'), ('Thank', 'VB'), ('you', 'PPO'), ('for', 'IN'), ('the', 'AT'), ('use', 'NN'), ('of', 'IN'), ('your', 'PP$'), ('bath', 'NN'), ("''", "''"), ('--', '--'), ('when', 'WRB'), ('she', 'PPS'), ('sat', 'VBD'), ('down', 'RP'), ('opposite', 'IN'), ('him', 'PPO'), ('--', '--'), ('spoken', 'VBN'), ('in', 'IN'), ('a', 'AT'), ('low', 'JJ'), ('voice', 'NN'), (',', ','), ('came', 'VBD'), ('across', 'RB'), ('with', 'IN'), ('coolnesses', 'NNS'), ('of', 'IN'), ('intelligence', 'NN'), ('and', 'CC'), ('control', 'NN'), ('.', '.')]
-        >>> from randomsentence.sentence import SentenceTool
-        >>> SentenceTool().detokenize([tagged_word[0] for tagged_word in tagged_sent])
-        "As she was rather tired this evening, her simple ``Thank you for the use of your bath ''-- when she sat down opposite him -- spoken in a low voice, came across with coolnesses of intelligence and control."
-
         """
-        return choice(self.tagged_sents)
+        return list(self.model.gen())
 
     def initials_to_pos(self, initials):
         """
@@ -50,7 +47,7 @@ class Brown:
                 if set(initials) == set(allowed_initials):
                     return v['pos']
 
-        raise ValueError('Invalid initials')
+        return None
 
     def word_from_pos_and_initials(self, pos, initials, timeout=5):
         """
@@ -69,6 +66,13 @@ class Brown:
                 return word
 
         raise TimeoutError
+
+    def word_list_from_pos(self, pos, strictness=2):
+        word_list = []
+        for k, v in self.words_from_pos.items():
+            if k[:strictness] == pos:
+                word_list.extend(v)
+        return word_list
 
 
 if __name__ == '__main__':
