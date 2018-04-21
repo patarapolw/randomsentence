@@ -14,8 +14,11 @@ __doctest_skip__ = ['Brown.get_tagged_sent', 'Brown.word_from_pos_and_initials']
 
 
 class Brown:
-    def __init__(self):
-        self.model = markovify.Chain(brown.tagged_sents(), 2)
+    def __init__(self, do_markovify=False):
+        self.tagged_sents = brown.tagged_sents()
+        if do_markovify:
+            self.model = markovify.Chain(self.tagged_sents, 2)
+
         self.words_from_pos = dict()
         for word, tag in brown.tagged_words():
             self.words_from_pos.setdefault(tag, []).append(word)
@@ -26,11 +29,13 @@ class Brown:
         """
 
         :return list of tuples of non-space-separated strings:
-        >>> tagged_sent = Brown().get_tagged_sent()
-        >>> tagged_sent
+        >>> Brown().get_tagged_sent()
         [('As', 'CS'), ('she', 'PPS'), ('was', 'BEDZ'), ('rather', 'QL'), ('tired', 'VBN'), ('this', 'DT'), ('evening', 'NN'), (',', ','), ('her', 'PP$'), ('simple', 'JJ'), ('``', '``'), ('Thank', 'VB'), ('you', 'PPO'), ('for', 'IN'), ('the', 'AT'), ('use', 'NN'), ('of', 'IN'), ('your', 'PP$'), ('bath', 'NN'), ("''", "''"), ('--', '--'), ('when', 'WRB'), ('she', 'PPS'), ('sat', 'VBD'), ('down', 'RP'), ('opposite', 'IN'), ('him', 'PPO'), ('--', '--'), ('spoken', 'VBN'), ('in', 'IN'), ('a', 'AT'), ('low', 'JJ'), ('voice', 'NN'), (',', ','), ('came', 'VBD'), ('across', 'RB'), ('with', 'IN'), ('coolnesses', 'NNS'), ('of', 'IN'), ('intelligence', 'NN'), ('and', 'CC'), ('control', 'NN'), ('.', '.')]
         """
-        return list(self.model.gen())
+        try:
+            return list(self.model.gen())
+        except AttributeError:
+            return choice(self.tagged_sents)
 
     def initials_to_pos(self, initials):
         """
