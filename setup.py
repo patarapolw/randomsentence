@@ -13,7 +13,7 @@ tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires
 
 setup(
     name='randomsentence',  # Required
-    version='0.1.1',  # Required
+    version='0.2.0',  # Required
     description='Generate a sentence, randomly or from a list of keywords/initials. '
                 'This is based on Brown corpus.',  # Required
     long_description=long_description,  # Optional
