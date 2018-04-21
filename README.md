@@ -12,7 +12,7 @@ python setup.py install
 ## Usage
 
 
-```
+```pycon
 >>> from randomsentence import Brown
 >>> tagged_sentence = Brown().get_tagged_sent()
 >>> tagged_sentence
@@ -21,7 +21,7 @@ python setup.py install
 
 For Brown corpus, it is tagged based on Part-of-speech. This can easily be turned to a real sentence.
 
-```
+```pycon
 >>> from randomsentence import SentenceTool
 >>> sentence_tool = SentenceTool()
 >>> sentence_tool.detokenize_tagged(tagged_sentence)
@@ -35,7 +35,7 @@ For Brown corpus, it is tagged based on Part-of-speech. This can easily be turne
 
 For KeywordParse, the word is tagged based on whether the keyword overlaps.
 
-```
+```pycon
 >>> sentence_tool.detokenize_tagged(tagged_sentence)
 'On the love he stopped at the blind to receive his trouble'
 >>> tagged_sentence = parser.from_initials('JKr')
@@ -47,7 +47,7 @@ For KeywordParse, the word is tagged based on whether the keyword overlaps.
 
 Grammar fixing module is also included, in case minor grammar fix is needed. This is based on language-check / languagetool.
 
-```
+```pycon
 >>> from randomsentence import GrammarCorrector
 >>> corrector = GrammarCorrector()
 >>> corrector.correct('A sentence with a error in the Hitchhiker’s Guide tot he Galaxy')
