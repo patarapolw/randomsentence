@@ -6,7 +6,6 @@ except ImportError:
     from random import choice
 
 from randomsentence.word import WordTool
-from randomsentence.brown import Brown
 
 
 class SentenceTool:

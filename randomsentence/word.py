@@ -38,6 +38,17 @@ class WordTool:
         """
         return choice(self.words)
 
+    def get_random_common_word(self, min_common=100, max_common=None):
+        """
+
+        :param int min_common:
+        :param int | None max_common:
+        :return:
+        >>> WordTool().get_random_common_word()
+        'sitemap'
+        """
+        return choice(self.word_common[min_common:max_common])
+
     def commonness(self, word):
         """
         Commonness of a word.
