@@ -24,7 +24,7 @@ setup(
     keywords='random sentence random_sentence random_word',  # Optional
     packages=find_packages(exclude=['tests']),  # Required
     install_requires=install_requires,  # Optional
-    python_requires='>=3',
+    python_requires='>=3.5',
     tests_require=tests_require,
     extras_require={  # Optional
         'test': tests_require,
