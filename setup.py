@@ -25,7 +25,7 @@ setup(
     packages=find_packages(exclude=['tests']),  # Required
     install_requires=install_requires,  # Optional
     python_requires='>=3',
-    tests_require=pytest_requires,
+    tests_require=['pytest'],
     extras_require={  # Optional
         'test': pytest_requires,
         'with-language-check': ['language-check']
