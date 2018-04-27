@@ -1,5 +1,7 @@
 # Random Sentence
 
+[![Build Status](https://travis-ci.org/patarapolw/randomsentence.svg?branch=master)](https://travis-ci.org/patarapolw/randomsentence)
+
 Generate a sentence, randomly or from a list of keywords/initials. This is based on Brown corpus. 
 
 ## Installation
