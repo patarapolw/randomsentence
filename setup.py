@@ -27,7 +27,7 @@ setup(
     python_requires='>=3',
     tests_require=pytest_requires,
     extras_require={  # Optional
-        'test': ['tox'] + pytest_requires,
+        'test': pytest_requires,
         'with-language-check': ['language-check']
     },
     package_data={  # Optional

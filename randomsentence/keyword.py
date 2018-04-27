@@ -7,7 +7,7 @@ except ImportError:
 
 from randomsentence.brown import Brown
 
-__doctest_skip__ = ['KeywordParse.from_keyword_list', 'KeywordParse.from_initials_list']
+__doctest_skip__ = ['KeywordParse.from_keyword_list', 'KeywordParse.from_initials_list', 'KeywordParse.from_initials']
 
 
 class KeywordParse:

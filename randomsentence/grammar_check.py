@@ -4,6 +4,8 @@ try:
 except ImportError:
     pass
 
+__doctest_skip__ = ['GrammarCorrector.correct']
+
 
 def languagetool_commandline(bad_sentence, executable_path, temp_file='tmp.txt'):
     with open(temp_file, 'w') as f:
@@ -26,8 +28,7 @@ class GrammarCorrector:
         :param str sentence:
         :param str temp_file:
         :return str: grammatically correct sentence
-        >>> path = '/Users/patarapolw/PycharmProjects/sentencebuilder/sentencebuilder/LanguageTool-4.1/languagetool-commandline.jar'
-        >>> GrammarCorrector(languagetool_commandline_path=path).correct('A sentence with a error in the Hitchhiker’s Guide tot he Galaxy')
+        >>> GrammarCorrector().correct('A sentence with a error in the Hitchhiker’s Guide tot he Galaxy')
         'A sentence with an error in the Hitchhiker’s Guide to the Galaxy'
         """
         if isinstance(self.tool, str):

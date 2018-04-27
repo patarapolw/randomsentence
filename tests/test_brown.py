@@ -1,5 +1,5 @@
 """
-15.8908 seconds per Brown
+17.8224 seconds per Brown
 0.0925 seconds per Brown.get_tagged_sent
 0.0000 seconds per Brown.initials_to_pos
 0.0002 seconds per Brown.word_from_pos_and_initials

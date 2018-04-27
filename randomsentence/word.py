@@ -13,7 +13,7 @@ except ImportError:
 
 from randomsentence.dir import database_path
 
-__doctest_skip__ = ['WordTool.get_random_word']
+__doctest_skip__ = ['WordTool.get_random_word', 'WordTool.get_random_common_word']
 
 
 class WordTool:
