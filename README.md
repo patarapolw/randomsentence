@@ -1,6 +1,9 @@
 # Random Sentence
 
 [![Build Status](https://travis-ci.org/patarapolw/randomsentence.svg?branch=master)](https://travis-ci.org/patarapolw/randomsentence)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/randomsentence.svg)](https://pypi.python.org/pypi/randomsentence/)
+[![PyPI license](https://img.shields.io/pypi/l/randomsentence.svg)](https://pypi.python.org/pypi/randomsentence/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/randomsentence.svg)](https://pypi.python.org/pypi/randomsentence/)
 
 Generate a sentence, randomly or from a list of keywords/initials. This is based on Brown corpus. 
 

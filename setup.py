@@ -13,7 +13,7 @@ tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires
 
 setup(
     name='randomsentence',  # Required
-    version='0.2.0',  # Required
+    version='0.2.1',  # Required
     description='Generate a sentence, randomly or from a list of keywords/initials. '
                 'This is based on Brown corpus.',  # Required
     long_description=long_description,  # Optional
@@ -25,6 +25,16 @@ setup(
     packages=find_packages(exclude=['tests']),  # Required
     install_requires=install_requires,  # Optional
     python_requires='>=3.5',
+    license='MIT',
+    classifiers=[
+          'Environment :: Console',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: MIT License',
+          'Natural Language :: English',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Topic :: Utilities'
+    ],
     tests_require=tests_require,
     extras_require={  # Optional
         'test': tests_require,
