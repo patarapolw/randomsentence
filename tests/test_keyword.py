@@ -27,10 +27,10 @@ def from_keyword_list():
         :return:
 
         from_keyword_list(), length=3, strictness=None, Success 30 of 50, 0.0224 seconds per test
-        from_keyword_list(), length=3, strictness=2, Success 50 of 50, 0.1001 seconds per test
-        from_keyword_list(), length=4, strictness=2, Success 50 of 50, 0.1033 seconds per test
-        from_keyword_list(), length=5, strictness=2, Success 50 of 50, 0.1017 seconds per test
-        from_keyword_list(), length=6, strictness=2, Success 50 of 50, 0.1034 seconds per test
+        from_keyword_list(), length=3, strictness=2, Success 997 of 1000, 0.0147 seconds per test
+        from_keyword_list(), length=4, strictness=2, Success 998 of 1000, 0.0198 seconds per test
+        from_keyword_list(), length=5, strictness=2, Success 996 of 1000, 0.0280 seconds per test
+        from_keyword_list(), length=6, strictness=2, Success 997 of 1000, 0.0472 seconds per test
         """
         keyword_list = [word_tool.get_random_word() for _ in range(length)]
         sentence = keyword_parse.from_keyword_list(keyword_list=keyword_list, strictness=strictness)
@@ -121,8 +121,8 @@ def test_from_initials(from_initials, length):
 
 
 if __name__ == '__main__':
-    from tests import timeit
+    from MyUtils.testing.repeat import success_rate
     from functools import partial
 
-    timeit(partial(from_initials(), length=6))
+    success_rate(partial(from_keyword_list(), 6, 2), rep=1000)
     # pytest.main([__file__])
