@@ -1,1 +1,1 @@
-web: gunicorn app:randomsentenceapp --log-file=-
+web: python app.py

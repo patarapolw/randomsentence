@@ -7,7 +7,6 @@ name = "pypi"
 markovify = "*"
 nltk = "*"
 mosestokenizer = "*"
-gunicorn = "*"
 bottle = "*"
 
 [dev-packages]
