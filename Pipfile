@@ -8,6 +8,7 @@ markovify = "*"
 nltk = "*"
 mosestokenizer = "*"
 bottle = "*"
+diceware-utils = "*"
 
 [dev-packages]
 pytest = "*"
@@ -15,7 +16,6 @@ pytest-xdist = "*"
 pytest-repeat = "*"
 pytest-timeout = "*"
 pytest-doctestplus = "*"
-diceware-utils = "*"
 
 [requires]
 python_version = "3.6.5"
