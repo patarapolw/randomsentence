@@ -7,6 +7,7 @@ name = "pypi"
 markovify = "*"
 nltk = "*"
 mosestokenizer = "*"
+gunicorn = "*"
 
 [dev-packages]
 pytest = "*"
