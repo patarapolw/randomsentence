@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 from codecs import open
 from os import path
 
@@ -13,7 +13,7 @@ tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires
 
 setup(
     name='randomsentence',  # Required
-    version='0.3.0',  # Required
+    version='0.3.1',  # Required
     description='Generate a sentence, randomly or from a list of keywords/initials. '
                 'This is based on Brown corpus.',  # Required
     long_description=long_description,  # Optional
@@ -22,7 +22,7 @@ setup(
     author='Pacharapol Withayasakpunt',  # Optional
     author_email='patarapolw@gmail.com',  # Optional
     keywords='random sentence random_sentence random_word',  # Optional
-    packages=find_packages(exclude=['tests']),  # Required
+    packages=["randomsentence"],  # Required
     install_requires=install_requires,  # Optional
     python_requires='>=3.5',
     license='MIT',
