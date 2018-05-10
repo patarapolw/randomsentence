@@ -8,6 +8,7 @@ markovify = "*"
 nltk = "*"
 mosestokenizer = "*"
 gunicorn = "*"
+bottle = "*"
 
 [dev-packages]
 pytest = "*"
@@ -16,7 +17,6 @@ pytest-repeat = "*"
 pytest-timeout = "*"
 pytest-doctestplus = "*"
 diceware-utils = "*"
-bottle = "*"
 
 [requires]
 python_version = "3.6.5"
