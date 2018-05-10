@@ -22,11 +22,11 @@ def index():
 
 @randomsentenceapp.post('/generate')
 def generate():
-    keyword_list = request.forms.get('keywords', '').split(' ')
-    if len(keyword_list) == 0:
+    keywords = request.forms.get('keywords', '')
+    if keywords == '':
         return sentence_tools.detokenize_tagged(random_sentence.get_tagged_sent())
     else:
-        return render_token(keyword_list)
+        return render_token(keywords.split(' '))
 
 
 @randomsentenceapp.post('/randomize_words')
@@ -35,15 +35,18 @@ def randomize_words():
     return ' '.join([word_list.get_random_word() for _ in range(number_of_words)])
 
 
-@randomsentenceapp.get('/static/js/<filename:path>')
-def send_js(filename):
-    return static_file(filename, root='./webdemo/static/js')
+@randomsentenceapp.get('/static/js/<filename>')
+def js(filename):
+    return static_file(filename, root='webdemo/static/js')
 
 
 def render_token(keyword_list):
     tagged_sentence = sentence_maker.from_keyword_list(keyword_list)
-    for i, pair in enumerate(tagged_sentence):
-        if pair[1]:
-            tagged_sentence[i][0] = '<b>{}</b>'.format(pair[0])
+    sentence_tokens = []
+    for word, match in tagged_sentence:
+        if match:
+            sentence_tokens.append('<b>{}</b>'.format(word))
+        else:
+            sentence_tokens.append(word)
 
-    return sentence_tools.detokenize_tagged(tagged_sentence)
+    return sentence_tools.detokenize(sentence_tokens)
