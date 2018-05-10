@@ -9,9 +9,8 @@ $(document).ready(function() {
     $("#do_randomize_words").click(function(event) {
         $.post('/randomize_words', function(data, textStatus, xhr) {
             $("#keywords").val(data);
+            $("#do_generate_sentence").click();
         });
-
-        $("#do_generate_sentence").click();
     });
 
     $("#do_randomize_words").click();
