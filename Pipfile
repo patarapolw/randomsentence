@@ -6,9 +6,7 @@ name = "pypi"
 [packages]
 markovify = "*"
 nltk = "*"
-six = "*"
-PyYAML = "*"
-Unidecode = "*"
+mosestokenizer = "*"
 
 [dev-packages]
 pytest = "*"
@@ -16,7 +14,7 @@ pytest-xdist = "*"
 pytest-repeat = "*"
 pytest-timeout = "*"
 pytest-doctestplus = "*"
-MyUtils = {git = "https://github.com/patarapolw/MyUtils.git", editable = true}
+diceware-utils = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.6"

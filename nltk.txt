@@ -1,4 +1,3 @@
 brown
-perluniprops
 punkt
 averaged_perceptron_tagger

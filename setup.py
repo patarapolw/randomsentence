@@ -7,13 +7,13 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-install_requires = ['nltk', 'PyYAML', 'markovify']
+install_requires = ['nltk', 'markovify', 'mosestokenizer']
 pytest_requires = ['xdist', 'repeat', 'timeout', 'doctestplus']
 tests_require = ['pytest'] + ['pytest-{}'.format(req) for req in pytest_requires]
 
 setup(
     name='randomsentence',  # Required
-    version='0.2.2',  # Required
+    version='0.3.0',  # Required
     description='Generate a sentence, randomly or from a list of keywords/initials. '
                 'This is based on Brown corpus.',  # Required
     long_description=long_description,  # Optional
@@ -39,8 +39,5 @@ setup(
     extras_require={  # Optional
         'test': tests_require,
         'with-language-check': ['language-check']
-    },
-    package_data={  # Optional
-        'randomsentence': ['database/*'],
-    },
+    }
 )
