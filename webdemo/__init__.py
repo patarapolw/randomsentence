@@ -20,7 +20,7 @@ def index():
 
 @randomsentenceapp.post('/generate')
 def generate():
-    keyword_list = request.forms.get('keywords').split(' ')
+    keyword_list = request.forms.get('keywords', '').split(' ')
     if len(keyword_list) == 0:
         return sentence_tools.detokenize_tagged(random_sentence.get_tagged_sent())
     else:
