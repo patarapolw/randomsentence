@@ -1,11 +1,12 @@
 from bottle import Bottle, TEMPLATE_PATH, template, request
 
 from randomsentence.sentence_maker import SentenceMaker
-from randomsentence.randomsentence import RandomSentence
+# from randomsentence.randomsentence import RandomSentence
 from randomsentence.sentence_tools import SentenceTools
 
 sentence_maker = SentenceMaker()
-random_sentence = RandomSentence()
+# random_sentence = RandomSentence()
+random_sentence = sentence_maker.random_sentences
 sentence_tools = SentenceTools()
 
 TEMPLATE_PATH.append('./webdemo/templates/')
